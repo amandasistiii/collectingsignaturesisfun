@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Signature Form</title>
+</head>
+<body>
+    <h1>Sign Below</h1>
+    <form action="/submit" method="POST">
+        <!-- Canvas for the signature -->
+        <label for="signature">Signature:</label>
+        <canvas id="signature-pad" width="500" height="200" style="border:1px solid black;"></canvas>
+        <br>
+        <!-- Button to clear the signature -->
+        <button type="button" id="clear-signature">Clear</button>
+        <!-- Hidden input to store the signature -->
+        <input type="hidden" id="signature-data" name="signature">
+        <br><br>
+        <!-- Submit the form -->
+        <button type="submit">Submit</button>
+    </form>
+
+    <script>
+        const canvas = document.getElementById("signature-pad");
+        const ctx = canvas.getContext("2d");
+        const signatureInput = document.getElementById("signature-data");
+        let drawing = false;
+
+        // Start drawing
+        canvas.addEventListener("mousedown", (e) => {
+            drawing = true;
+            ctx.beginPath();
+            ctx.moveTo(e.offsetX, e.offsetY);
+        });
+
+        // Draw as the user moves the mouse
+        canvas.addEventListener("mousemove", (e) => {
+            if (drawing) {
+                ctx.lineTo(e.offsetX, e.offsetY);
+                ctx.stroke();
+            }
+        });
+
+        // Stop drawing
+        canvas.addEventListener("mouseup", () => {
+            drawing = false;
+            // Save the drawing as Base64
+            signatureInput.value = canvas.toDataURL();
+        });
+
+        // Clear the canvas
+        document.getElementById("clear-signature").addEventListener("click", () => {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            signatureInput.value = ""; // Clear the hidden input
+        });
+    </script>
+</body>
+</html>
